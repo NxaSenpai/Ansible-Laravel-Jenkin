@@ -1,6 +1,11 @@
 pipeline {
   agent any
 
+  environment {
+    TELEGRAM_TOKEN = credentials('telegram_bot_token')
+    TELEGRAM_CHAT_ID = credentials('telegram_chat_id')
+  }
+
   stages {
 
     stage('Install PHP deps') {
