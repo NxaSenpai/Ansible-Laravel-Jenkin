@@ -56,6 +56,19 @@ pipeline {
   }
 
   post {
+
+    success {
+      sh '''
+        if [ -n "${TELEGRAM_TOKEN:-}" ] && [ -n "${TELEGRAM_CHAT_ID:-}" ]; then
+          curl -s -X POST \
+            "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
+            -d "chat_id=${TELEGRAM_CHAT_ID}" \
+            -d "text=SUCCESS: ${JOB_NAME} build ${BUILD_NUMBER}"
+        else
+          echo "Skipping Telegram notification: TELEGRAM_TOKEN or TELEGRAM_CHAT_ID is not set."
+        fi  
+      '''
+    }
     failure {
       sh '''
         if [ -n "${TELEGRAM_TOKEN:-}" ] && [ -n "${TELEGRAM_CHAT_ID:-}" ]; then
